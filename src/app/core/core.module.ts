@@ -13,8 +13,8 @@ import {StoreModule} from '../store/store.module';
   ],
   declarations: [],
   providers: [
-    UserService,
-    {provide: HTTP_INTERCEPTORS, useClass: ModifyRequestInterceptor, multi: true},
+    UserService
+    // {provide: HTTP_INTERCEPTORS, useClass: ModifyRequestInterceptor, multi: true},
   ],
 })
 export class CoreModule {
