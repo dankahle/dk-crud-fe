@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import * as _ from 'lodash';
+import {User} from './users/user';
+import {UserService} from './core/services/user.service';
 
 @Component({
   selector: 'dk-root',
@@ -6,5 +9,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  name = 'dank';
+  name = 'dank5';
+
+
 }
