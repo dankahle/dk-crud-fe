@@ -3,7 +3,9 @@ const express = require('express'),
   apiErrorHandler = require('api-error-handler'),
   userRouter = require('./user/router'),
   cors = require('cors'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  graphqlHTTP = require('express-graphql');
+
 
 // Promise = require('bluebird'); // eslint-disable-line no-global-assign
 // mongoose.Promise = Promise;
@@ -18,6 +20,7 @@ const port = 3005;
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true })); // use qs library, but don't see the need for it
 
 app.use(function tap(req, res, next) {
   console.log(req.url);
@@ -25,6 +28,10 @@ app.use(function tap(req, res, next) {
 })
 
 app.use('/api/users', userRouter);
+app.use('/graphql', graphqlHTTP({
+  schema: MyGraphQLSchema,
+  graphiql: true
+}));
 
 app.use(function (req, res) {
   res.status(404).send('Oops, file not found')
