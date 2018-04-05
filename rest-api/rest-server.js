@@ -1,11 +1,20 @@
 const express = require('express'),
   bodyParser = require('body-parser'),
   apiErrorHandler = require('api-error-handler'),
-  userRouter = require('./user/userRouter'),
-  cors = require('cors');
+  userRouter = require('./user/router'),
+  cors = require('cors'),
+  mongoose = require('mongoose');
+
+// Promise = require('bluebird'); // eslint-disable-line no-global-assign
+// mongoose.Promise = Promise;
+
+const mongoUri = 'mongodb://localhost/dkcrud';
+mongoose.connect(mongoUri);
+mongoose.connection.on('error', () => {
+  throw new Error(`unable to connect to database: ${mongoUri}`);
+});
 
 const port = 3005;
-
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());

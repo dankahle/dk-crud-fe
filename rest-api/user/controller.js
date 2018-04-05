@@ -1,4 +1,5 @@
-var _ = require('lodash');
+const _ = require('lodash'),
+  User = require('./model');
 
 var users = [
   {id: 1, name: 'dank', age: 50},
@@ -7,34 +8,29 @@ var users = [
 ]
 
 exports.getAll = function() {
-	return users;
+  return User.find()
+    .sort('name')
+    .exec()
 }
 
 exports.getOne = function(id){
-	return getOneUser(id);
+	return User.findById(id).exec();
 }
 
 exports.add = function(user) {
-	user.id = getNextUserId();
-	users.push(user);
-	return user;
+  return User.create(user);
 }
 
 exports.update = function(id, body) {
-  const user = getOneUser(id);
-  if (user) {
-    return _.merge(user, body);
-  } else {
-    return;
-  }
+  return User.replaceOne({_id: id}, body)
+    .then(() => User.findById(id).exec())
 }
 
 exports.remove = function(id) {
-	var user = getOneUser(id);
-	if(!user)
-		return {count: 0};
-	_.pull(users, user);
-	return {count: 1};
+  return User.remove({_id: id}).exec()
+    .then(x => {
+      return x;
+    })
 }
 
 function getNextUserId() {
