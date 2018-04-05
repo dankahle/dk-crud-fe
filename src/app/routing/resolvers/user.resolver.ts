@@ -17,8 +17,7 @@ export class UserResolver implements Resolve<User> {
       if (id === 'add') {
         return null;
       } else {
-        const nid = parseInt(id, 10);
-        return this.userService.getOne(nid).take(1).map(user => {
+        return this.userService.getOne(id).take(1).map(user => {
           if (user) {
             return user;
           } else { // nid not found
