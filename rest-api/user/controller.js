@@ -1,43 +1,48 @@
-const _ = require('lodash'),
-  User = require('./model');
+const express = require('express'),
+  repo = require('./repo');
 
-var users = [
-  {id: 1, name: 'dank', age: 50},
-  {id: 2, name: 'carl', age: 60},
-  {id: 3, name: 'jim', age: 40},
-]
-
-exports.getAll = function() {
-  return User.find()
-    .sort('name')
-    .exec()
+exports.getAll = function (req, res, next) {
+  repo.getAll()
+    .then(users => res.send(users))
+    .catch(next);
 }
 
-exports.getOne = function(id){
-	return User.findById(id).exec();
+exports.addOne = function (req, res, next) {
+  const user = req.body;
+  repo.addOne(user)
+    .then(_user => res.send(_user))
+    .catch(next);
 }
 
-exports.add = function(user) {
-  return User.create(user);
-}
-
-exports.update = function(id, body) {
-  return User.replaceOne({_id: id}, body)
-    .then(() => User.findById(id).exec())
-}
-
-exports.remove = function(id) {
-  return User.remove({_id: id}).exec()
-    .then(x => {
-      return x;
+exports.getOne = function (req, res, next)
+{
+  repo.getOne(req.params.id)
+    .then(user => {
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(404).end();
+      }
     })
+    .catch(next)
 }
 
-function getNextUserId() {
-  return _.max(_.map(users, 'id')) + 1;
+exports.updateOne = function(req, res, next)
+{
+  repo.updateOne(req.params.id, req.body)
+    .then(user => {
+      if (user) {
+        res.send(user);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(next)
 }
 
-function getOneUser(id) {
-  return _.find(users, {id: Number(id)});
+exports.removeOne = function(req, res, next)
+{
+  repo.removeOne(req.params.id)
+    .then(() => res.sendStatus(204));
 }
 
