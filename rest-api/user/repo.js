@@ -1,29 +1,30 @@
 const _ = require('lodash'),
   User = require('./model');
 
-exports.getAll = function() {
-  return User.find()
-    .sort('name')
-    .exec()
+exports.getAll = function ({skip, limit}) {
+  const query = User.find().sort('name');
+
+  if (skip !== undefined && limit !== undefined) {
+    query.skip(+skip).limit(+limit)
+  }
+  return query.exec();
 }
 
-exports.getOne = function(id){
-	return User.findById(id).exec();
+exports.getOne = function ({id}) {
+  return User.findById(id).exec();
 }
 
-exports.addOne = function(user) {
-  return User.create(user);
+exports.addOne = function ({data}) {
+  return User.create(data);
 }
 
-exports.updateOne = function(id, body) {
-  return User.replaceOne({_id: id}, body)
+exports.updateOne = function ({id, data}) {
+  return User.replaceOne({_id: id}, data)
     .then(() => User.findById(id).exec())
 }
 
-exports.removeOne = function(id) {
-  return User.remove({_id: id}).exec()
-    .then(x => {
-      return x;
-    })
+exports.removeOne = function ({id}) {
+  return User.findById(id)
+    .then(user => user.remove());
 }
 

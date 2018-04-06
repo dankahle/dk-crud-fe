@@ -2,21 +2,26 @@ const express = require('express'),
   repo = require('./repo');
 
 exports.getAll = function (req, res, next) {
-  repo.getAll()
+  const params = {};
+  if (req.query.skip && req.query.limit) {
+    params.skip = req.query.skip;
+    params.limit = req.query.limit;
+  }
+  repo.getAll(params)
     .then(users => res.send(users))
     .catch(next);
 }
 
 exports.addOne = function (req, res, next) {
   const user = req.body;
-  repo.addOne(user)
+  repo.addOne({data: user})
     .then(_user => res.send(_user))
     .catch(next);
 }
 
 exports.getOne = function (req, res, next)
 {
-  repo.getOne(req.params.id)
+  repo.getOne({id: req.params.id})
     .then(user => {
       if (user) {
         res.send(user);
@@ -29,7 +34,7 @@ exports.getOne = function (req, res, next)
 
 exports.updateOne = function(req, res, next)
 {
-  repo.updateOne(req.params.id, req.body)
+  repo.updateOne({id: req.params.id, data: req.body})
     .then(user => {
       if (user) {
         res.send(user);
@@ -42,7 +47,7 @@ exports.updateOne = function(req, res, next)
 
 exports.removeOne = function(req, res, next)
 {
-  repo.removeOne(req.params.id)
-    .then(() => res.sendStatus(204));
+  repo.removeOne({id: req.params.id})
+    .then(user => res.send(user));
 }
 

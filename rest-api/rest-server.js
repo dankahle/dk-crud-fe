@@ -4,8 +4,9 @@ const express = require('express'),
   userRouter = require('./user/router'),
   cors = require('cors'),
   mongoose = require('mongoose'),
-  graphqlHTTP = require('express-graphql');
-
+  graphqlHTTP = require('express-graphql'),
+  schema = require('./schema'),
+  userRepo = require('./user/repo');
 
 // Promise = require('bluebird'); // eslint-disable-line no-global-assign
 // mongoose.Promise = Promise;
@@ -28,9 +29,15 @@ app.use(function tap(req, res, next) {
 })
 
 app.use('/api/users', userRouter);
-app.use('/graphql', graphqlHTTP({
-  schema: MyGraphQLSchema,
-  graphiql: true
+app.use('/api/graphql', graphqlHTTP({
+  schema: schema,
+  graphiql: true,
+  formatError: error => ({
+    message: error.message,
+    locations: error.locations,
+    stack: error.stack ? error.stack.split('\n') : [],
+    path: error.path
+  })
 }));
 
 app.use(function (req, res) {
