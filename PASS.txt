@@ -1,18 +1,9 @@
 
 
-todo
-* when done with ql version, need to copy the repo back to rest version to verify all works fine both ways, i..e you're looking for a repo solution that works for both right?
-
-
 pass:
-compiler errors done. Now
-1. test iwth graphiql
-2. when that works, do  below... rest and restql branches and test restql branch crud with ui
+you have graphiql and postman hitting ql and rest ok, and you took controller and repo to restql branch and it's working with UI as well.
 
-pass:
-you' just updated repo to handle both rest and ql for getall and getone. these funcitons are looking param objects in ql so we're converting to the same for rest.
+So down to making UI work with apollo.
 
-you're working on queries section of user schema, then move to mutations... then hit with graphiql, then onto apollo.
 
-BUT FIRST... when you get the repo updated... take it over to master and see if it works, if so, commit that I guess cause i'ts your new master approach? No... make a new branch... so branch master to rest, then branch off that and update repo and update repo and call rest-ql, then you'll have standard rest and ql rest and make sure restql works before moving on with the shared repo thing.
 
