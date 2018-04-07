@@ -1,9 +1,15 @@
 
 
 pass:
-you have graphiql and postman hitting ql and rest ok, and you took controller and repo to restql branch and it's working with UI as well.
+have user list coming up with gq, now do the rest.
+keep in mind this query vs watchQuery. You want the latter I assume, but then you'd have to make that work to get rid of get rid of users.getAll call after eveyrthing? Hmm. But that's tied in to route changes and a resolve I think, so other stuff would have to change too. Might have to rethink routing on it then?
 
-So down to making UI work with apollo.
 
+first pass:
+get working with graphql (apollo.query woudl be appropriate here, but watchQuery will do I figure)
 
+second pass:
+push data up to store and everyone operates on store?? I.e. if data is up there in watchQueries (happens on init), then the crud all updates that data and no more data gets? Just add/edit and the list is updated via that? How does that go again? you have to rename the cache val so users would match something else??
+
+deal is: you need to understand watchquery better, how their caching affects you. first pass should be apollo.query. Then second pass should be watchQuery with intelligent caching.
 

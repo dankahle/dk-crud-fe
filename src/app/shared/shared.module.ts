@@ -9,20 +9,26 @@ import {CoreModule} from '../core/core.module';
 import {StoreModule} from '../store/store.module';
 import {MakeRedDirective} from './directives/make-red.directive';
 import {RoutingModule} from '../routing/routing.module';
+import {ApolloModule} from 'apollo-angular';
+import {HttpLinkModule} from 'apollo-angular-link-http';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ApolloModule,
+    HttpLinkModule,
     RoutingModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
     CoreModule,
-    StoreModule
+    StoreModule,
   ],
   exports: [
     CommonModule,
     FormsModule,
+    ApolloModule,
+    HttpLinkModule,
     RoutingModule,
     BrowserAnimationsModule,
     FlexLayoutModule,

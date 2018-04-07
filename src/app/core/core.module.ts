@@ -4,6 +4,9 @@ import {ModifyRequestInterceptor} from './interceptors/modify-request.intercepto
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {UserService} from './services/user.service';
 import {StoreModule} from '../store/store.module';
+import {Apollo} from 'apollo-angular';
+import {HttpLink} from 'apollo-angular-link-http';
+import {InMemoryCache} from 'apollo-cache-inmemory';
 
 @NgModule({
   imports: [
@@ -18,4 +21,15 @@ import {StoreModule} from '../store/store.module';
   ],
 })
 export class CoreModule {
+  constructor(
+    apollo: Apollo,
+    httpLink: HttpLink
+  ) {
+    apollo.create({
+      // By default, this client will send queries to the
+      // `/graphql` endpoint on the same host
+      link: httpLink.create({uri: 'http://localhost:3005/api/graphql'}),
+      cache: new InMemoryCache()
+    });
+  }
 }
