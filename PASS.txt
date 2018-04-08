@@ -1,11 +1,21 @@
 
 todo:
-*
+* need to ditch resolves if the values need to be watchQuery instead of query
+fix query/watchQuery<any> >> <User>, not sure why the dance. there was an article on adding certain types to ng to have it not complain to ts about the results. Looked stupid at the time, but at least things were typed. maybe still typed, i..e maybe funciton still returns User[]?? Yes...so who cares then?
 * do a list/detail with the detail selected to something, then edit and the detail should automatically update if you watchQuery it and you're using just a typename:id cache key right? Hmm. Say you have a list, and click on something in that list and want to show it in detail... what to show? Before it was all in store so easy, just set store.selectedUser and use that. Hmmm, nice enough, but this is from query list and query list won't be updated if you change one? Funny that all their egs are of adding one and not of updating one. Maybe updating one updates any in the cache, no matter the query they come from??
 * httpInterceptor that looks for errors in gq responses (force errors to see what comes back)
 
-users, user, addUser, updateUser, removeUser
-...userfrag
+
+
+pass:
+you have add working but need to do update thing... BUT... that won't work till you have it all on watchQuery
+so you did everything with watchQuery, then do obs.first() in init (should work fine), then for some reason, resolve doesn't get called. When you do: query() resolve gets called, when you do watchQuery() it doesn't. What??
+Figure that out, then add update and verify:
+* init code doesnt' run on update
+* list code updates and watchQuery subs run again
+
+
+
 
 pass:
 have user using resolve to see users users and not hitting api for them.

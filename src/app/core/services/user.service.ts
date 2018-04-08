@@ -3,13 +3,10 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {User} from '../../users/user';
 import gql from 'graphql-tag';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/observable/of';
 import {Apollo} from 'apollo-angular';
 import {Observable} from 'rxjs/Observable';
-import {defaultDataIdFromObject} from 'apollo-cache-inmemory';
+import '../../shared/observable-additions';
+import * as _ from 'lodash';
 
 const apiUrl = environment.apiUrl;
 
@@ -27,7 +24,7 @@ export class UserService {
   }
   `;
 
-  getAll(init = false): Observable<User[]> {// change to init = false for cache verification in all list resolve calls
+  getAll(watch = false): Observable<User[]> {// change to init = false for cache verification in all list resolve calls
 
     const query = gql`
          query GetUsers {
@@ -38,17 +35,26 @@ export class UserService {
          ${this.userFragment}
       `;
 
-    return this.apollo.watchQuery<any>({query})
+    const obs =  this.apollo.watchQuery<any>({query/*, fetchPolicy: 'network-only'*/})
       .valueChanges
       .map(result => {
         // just shows defaultId, not the one you changed to if you modified in new InMemoryCache() options
+        // maybe try: apollo.getClient().cache.config.dataIdFromObject??, thing is: the id is in the cache anyway
+        // just hit devtools/cache to see it
         // result.data.users.forEach(u => console.log(u, defaultDataIdFromObject(u)));
-        return result.data.users;
+
+        return this.sortUserList(result.data.users);
       })
       .catch(err => {
         console.error(err);
         return Observable.throw(err);
       });
+
+    if (watch) {
+      return obs;
+    } else {
+      return obs.first();
+    }
 
 /*
 // for cache testing, stuff it in init, then enforce it's in cache after.
@@ -125,4 +131,8 @@ export class UserService {
     return this.http.delete<User>(apiUrl + '/users/' + id);
   }
 
+  // for reuse between getall and addOne update section
+  sortUserList(users) {
+    return _.sortBy(users, user => user.name.toLowerCase()).reverse();
+  }
 }

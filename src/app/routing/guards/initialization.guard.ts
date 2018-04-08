@@ -1,15 +1,11 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/first';
-import {merge} from 'rxjs/observable/merge';
 import {Store} from '../../store/store';
-import {Subject} from 'rxjs/Subject';
 import * as _ from 'lodash';
 import {UserService} from '../../core/services/user.service';
+import '../../shared/observable-additions';
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 /**
@@ -49,7 +45,6 @@ export class InitializationGuard implements CanActivate {
 
     // an example of a complex initialization flow with dependencies of dependencies
     Observable.forkJoin(this.userService.getAll())
-      .first()
       .map(x => {
         // console.log('initguard done');
         this.store.pub({...this.store.state, initialized: true});
