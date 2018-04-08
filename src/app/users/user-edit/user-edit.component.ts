@@ -46,7 +46,10 @@ export class UserEditComponent {
         });
     } else {
       this.userService.updateOne(this.user)
-        .subscribe(updatedUser => this.router.navigateByUrl('/'));
+        .subscribe(updatedUser => {
+
+          this.router.navigateByUrl('/');
+        });
     }
   }
 }

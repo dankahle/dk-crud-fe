@@ -26,12 +26,19 @@ app.use(bodyParser.json());
 app.use(function tap(req, res, next) {
   let msg = req.method + ' - ' + req.url;
   if (req.body && (req.body.query || req.body.mutation)) {
+
+
+    msg = msg + JSON.stringify(req.body, null, 2);
+
+    // msg = msg + req.body.query || req.body.mutation;
+/*
     if (req.body.query) {
       msg = msg + req.body.query.replace('\n', ' ').substr(0, 30);
     }
     if (req.body.mutatation) {
       msg = msg + req.body.mutation.replace('\n', ' ').substr(0, 30);
     }
+*/
     console.log(msg);
   }
   next();
