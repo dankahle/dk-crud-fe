@@ -24,6 +24,15 @@ export class UserService {
   }
   `;
 
+  getAllQuery = gql`
+         query GetUsers {
+          users {
+            ...UserFragment
+          }             
+         }  
+         ${this.userFragment}
+      `;
+
   getAll(watch = false): Observable<User[]> {// change to init = false for cache verification in all list resolve calls
 
     const query = gql`
@@ -35,8 +44,8 @@ export class UserService {
          ${this.userFragment}
       `;
 
-    const obs =  this.apollo.watchQuery<any>({query/*, fetchPolicy: 'network-only'*/})
-      .valueChanges
+    const obs =  this.apollo.query<any>({query: this.getAllQuery/*, fetchPolicy: 'network-only'*/})
+      // .valueChanges
       .map(result => {
         // just shows defaultId, not the one you changed to if you modified in new InMemoryCache() options
         // maybe try: apollo.getClient().cache.config.dataIdFromObject??, thing is: the id is in the cache anyway
@@ -113,7 +122,8 @@ export class UserService {
       ${this.userFragment}
     `;
 
-    return this.apollo.mutate({mutation, variables: {data: user}})
+    return this.apollo.mutate({mutation, variables: {data: user},
+      refetchQueries: [{query: this.getAllQuery}]})
       .map(result => {
         return result.data.user;
       })
