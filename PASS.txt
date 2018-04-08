@@ -5,6 +5,9 @@ readme
   doesn't matter as just gets from cache right? Should at least.
 
 todo:
+* toss all those catch's in apollo.query/mutation? See if they're even being hit, yeah being hit, but with 500 and
+  even htough they have graphql errors, the graphqlErrors member is empty for some reason. Maybe nee a globl
+  query/watchQuery/mutation errors setting, see apollo doc for values
 * passing user instead of userInput in update mutation causes a 500 with errors, but you don't see
   anything on server for that. All handled by errorHandler middleware I guess, but should log on that right?
   You need to log in errorHandler, but probably do in mean.io

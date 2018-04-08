@@ -179,7 +179,10 @@ export class UserService {
       ${this.userFragment}
     `;
 
-    return this.apollo.mutate({mutation, variables: {id: user.id, data: {name: user.name, age: user.age}}})
+    return this.apollo.mutate({mutation, variables: {id: user.id,
+        data: {name: user.name, age: user.age}
+        // data: user
+    }})
     // no update command required for updates, just for add/delete
       .map(result => {
         return result.data.update;
