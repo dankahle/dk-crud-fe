@@ -30,7 +30,7 @@ export class UserEditComponent {
       this.userService.addOne(this.user)
         .subscribe(newUser => {
           const cache = this.apollo.getClient().cache as any;
-          console.log(cache.data.data);
+          // console.log(cache.data.data);
           this.router.navigateByUrl('/');
 
           // mutate.refreshQueries timing bug: It appears out add mutation's refreshQueries probably forces

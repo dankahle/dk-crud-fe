@@ -52,8 +52,8 @@ export class UserService {
       `;
 
     const fetchPolicy = networkOnly ? 'network-only' : 'cache-first';
-    const obs =  this.apollo.query<any>({query: this.getAllQuery, fetchPolicy: fetchPolicy})
-      // .valueChanges
+    const obs =  this.apollo.watchQuery<any>({query: this.getAllQuery, fetchPolicy: fetchPolicy})
+      .valueChanges
       .map(result => {
         // just shows defaultId, not the one you changed to if you modified in new InMemoryCache() options
         // maybe try: apollo.getClient().cache.config.dataIdFromObject??, thing is: the id is in the cache anyway
@@ -149,8 +149,12 @@ export class UserService {
       });
 
     /*
-        // refreshQueries option. Not the way to do it as the subscribe doesnt' wait for the refreshQueries.. only the mutation
-        // the following code (say a router.navigate), will get done before the cache is updated.
+        // context for comments below: edit page, add one >> subscribe >> router.navigate to list page:
+        // refreshQueries option. This wasn't working as you had to setTimeout for the router.navigate to make things work
+        // BUT... when you write out the cache at this point, both users cache and items cache all have new value,
+        // so truth be told: you don't really knwo what's going on there. It's clear things need more time, but the
+        // cache values associated exist "before" the router.navigate, so go figure. I'm gonna say: it does refreshQueries
+        // before it returns the subscribe, but for some reason, the routing messes things up.
         return this.apollo.mutate({mutation, variables: {data: user},
           refetchQueries: [{query: this.getAllQuery}]})
           .map(result => {
@@ -180,17 +184,17 @@ export class UserService {
     `;
 
     return this.apollo.mutate({mutation, variables: {id: id},
-      update: (store, { data: {add}, errors }) => {
+      update: (store, { data: {remove}, errors }) => {
         // Read the data from our cache for this query.
         const _data: {users} = store.readQuery({ query: this.getAllQuery });
         // Add our comment from the mutation to the end.
-        _data.users.push(add);
+        _.remove(_data.users, x => x.id === remove.id);
         _data.users = this.sortUserList(_data.users);
         // Write our data back to the cache.
         store.writeQuery({ query: this.getAllQuery, data: _data });
       }})
       .map(result => {
-        return result.data.add;
+        return result.data.remove;
       })
       .catch(err => {
         console.error(err);

@@ -21,7 +21,7 @@ describe('AppComponent', () => {
   it('should create the app', fakeAsync(() => {
     setTimeout(() => {
       expect('lala').toBe('one');
-      console.log('done');
+      // console.log('done');
     });
     tick();
   }));
