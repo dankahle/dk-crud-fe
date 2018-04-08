@@ -141,7 +141,7 @@ export class UserService {
         store.writeQuery({ query: this.getAllQuery, data: _data });
       }})
       .map(result => {
-        return result.data.user;
+        return result.data.add;
       })
       .catch(err => {
         console.error(err);
@@ -170,7 +170,32 @@ export class UserService {
   }
 
   deleteOne(id: string) {
-    return this.http.delete<User>(apiUrl + '/users/' + id);
+    const mutation = gql`
+      mutation DeleteOne($id: ID!) {
+        remove(id: $id) {
+          ...UserFragment
+        }
+      }
+      ${this.userFragment}
+    `;
+
+    return this.apollo.mutate({mutation, variables: {id: id},
+      update: (store, { data: {add}, errors }) => {
+        // Read the data from our cache for this query.
+        const _data: {users} = store.readQuery({ query: this.getAllQuery });
+        // Add our comment from the mutation to the end.
+        _data.users.push(add);
+        _data.users = this.sortUserList(_data.users);
+        // Write our data back to the cache.
+        store.writeQuery({ query: this.getAllQuery, data: _data });
+      }})
+      .map(result => {
+        return result.data.add;
+      })
+      .catch(err => {
+        console.error(err);
+        return Observable.throw(err);
+      });
   }
 
   // for reuse between getall and addOne update section

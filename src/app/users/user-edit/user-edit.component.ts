@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../user';
 import * as _ from 'lodash';
 import {UserService} from '../../core/services/user.service';
+import {Apollo} from 'apollo-angular';
 
 @Component({
   selector: 'dk-user-edit',
@@ -13,7 +14,8 @@ export class UserEditComponent {
   user: User;
   addMode: boolean;
 
-  constructor(private route: ActivatedRoute, public router: Router, private userService: UserService) {
+  constructor(private route: ActivatedRoute, public router: Router, private userService: UserService,
+              private apollo: Apollo) {
     this.addMode = route.snapshot.params.id === 'add';
     if (this.addMode) {
       this.user = <User>{name: '', age: undefined};
@@ -26,7 +28,9 @@ export class UserEditComponent {
   submit() {
     if (this.addMode) {
       this.userService.addOne(this.user)
-        .subscribe(() => {
+        .subscribe(newUser => {
+          const cache = this.apollo.getClient().cache as any;
+          console.log(cache.data.data);
           this.router.navigateByUrl('/');
 
           // mutate.refreshQueries timing bug: It appears out add mutation's refreshQueries probably forces
@@ -42,7 +46,7 @@ export class UserEditComponent {
         });
     } else {
       this.userService.updateOne(this.user)
-        .subscribe(() => this.router.navigateByUrl('/'));
+        .subscribe(updatedUser => this.router.navigateByUrl('/'));
     }
   }
 }
