@@ -38,7 +38,20 @@ export class UserService {
          ${this.userFragment}
       `;
 
+    return this.apollo.watchQuery<any>({query})
+      .valueChanges
+      .map(result => {
+        // just shows defaultId, not the one you changed to if you modified in new InMemoryCache() options
+        // result.data.users.forEach(u => console.log(u, defaultDataIdFromObject(u)));
+        return result.data.users;
+      })
+      .catch(err => {
+        console.error(err);
+        return Observable.throw(err);
+      });
 
+/*
+// for cache testing, stuff it in init, then enforce it's in cache after.
     if (init) {
       // this is init so only done once, so apollo.query not watchQuery right?
       return this.apollo.query<any>({query})
@@ -59,6 +72,7 @@ export class UserService {
           return Observable.throw(err);
         });
     }
+*/
 
   }
 
@@ -84,7 +98,23 @@ export class UserService {
     }
 
   addOne(user) {
-    return this.http.post<User>(apiUrl + '/users', user);
+    const mutation = gql`
+      mutation AddOne($data: UserInput!) {
+        add(data: $data) {
+          ...UserFragment
+        }
+      }
+      ${this.userFragment}
+    `;
+
+    return this.apollo.mutate({mutation, variables: {data: user}})
+      .map(result => {
+        return result.data.user;
+      })
+      .catch(err => {
+        console.error(err);
+        return Observable.throw(err);
+      });
   }
 
   updateOne(user) {

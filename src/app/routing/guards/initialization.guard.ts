@@ -4,6 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/first';
 import {merge} from 'rxjs/observable/merge';
 import {Store} from '../../store/store';
 import {Subject} from 'rxjs/Subject';
@@ -47,7 +48,8 @@ export class InitializationGuard implements CanActivate {
     // console.log('initguard start');
 
     // an example of a complex initialization flow with dependencies of dependencies
-    Observable.forkJoin(this.userService.getAll(true))
+    Observable.forkJoin(this.userService.getAll())
+      .first()
       .map(x => {
         // console.log('initguard done');
         this.store.pub({...this.store.state, initialized: true});
