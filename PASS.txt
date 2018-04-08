@@ -8,21 +8,18 @@ users, user, addUser, updateUser, removeUser
 ...userfrag
 
 pass:
-wasted a bunch of time getting the query resolver working, had to hack in the stringId to make it happen.
-Next up is the add with mutate.update section to update the users array. This is sorted on the server by name
-and their egs just push onto array. You could sort in ui instead, but then have to share that sort fcn in getAll
-and addOne right? OR... in this update, use the lodash sortGetIndex stuff?? Not sure.
-What the UI does has nothing to do with the server in a way. But server is there solely for the UI (graphql at least)
-I say: sort in UI, and share the sort method between getAll and addOne/update.
+have user using resolve to see users users and not hitting api for them.
+Next up: add with update section:
+* should update list
+* route change "should not call api then"
+// take out update section and verify it does call api to update, i.e. need the new one right? Make sure it works
+Then: delete, to see if it updates list or do you need an update in there as well? where you remove it from list?
+Then: update and verify the list gets updated.
 
-then update and delete and done for now.
+This whole logic is easier to see if you had one page that did this all, then the add/update/delete would fire off another next() to the list's watchQuery right? So you woudln't have to refresh the list, it would happen automatically.
 
-So what did you learn here?
-If you had users list and edit/add all on same page, then need that users list updated on add/edit right?
-If you used add/update and the update thing works like they say... then your user list:
-watchQuery.subscribe(...) will fire on adds and updates, without any extra work from you. Now fast forward to
-your routing scenario... add/update is another route and all will return to list page after which will do another query if it doesn't have latest, SO LOOK FOR NO ADDITIONAL QUERIES ON RETURN FROM ADD/EDIT FOR LIST
-Still confused why you had to do the resolver... you had an object
+thing is: if you refreshed... should just get from cache anyway (which is what will happen in the routing version)
+
 
 
 
