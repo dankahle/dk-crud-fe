@@ -2,7 +2,7 @@ const _ = require('lodash'),
   User = require('./model');
 
 exports.getAll = function ({skip, limit}) {
-  const query = User.find().sort('name');
+  const query = User.find();
 
   if (skip !== undefined && limit !== undefined) {
     query.skip(+skip).limit(+limit)

@@ -131,7 +131,15 @@ export class UserService {
     `;
 
     return this.apollo.mutate({mutation, variables: {data: user},
-      refetchQueries: [{query: this.getAllQuery}]})
+      update: (store, { data: {add}, errors }) => {
+        // Read the data from our cache for this query.
+        const _data: {users} = store.readQuery({ query: this.getAllQuery });
+        // Add our comment from the mutation to the end.
+        _data.users.push(add);
+        _data.users = this.sortUserList(_data.users);
+        // Write our data back to the cache.
+        store.writeQuery({ query: this.getAllQuery, data: _data });
+      }})
       .map(result => {
         return result.data.user;
       })
@@ -139,6 +147,22 @@ export class UserService {
         console.error(err);
         return Observable.throw(err);
       });
+
+    /*
+        // refreshQueries option. Not the way to do it as the subscribe doesnt' wait for the refreshQueries.. only the mutation
+        // the following code (say a router.navigate), will get done before the cache is updated.
+        return this.apollo.mutate({mutation, variables: {data: user},
+          refetchQueries: [{query: this.getAllQuery}]})
+          .map(result => {
+            return result.data.user;
+          })
+          .catch(err => {
+            console.error(err);
+            return Observable.throw(err);
+          });
+    */
+
+
   }
 
   updateOne(user) {
@@ -151,6 +175,6 @@ export class UserService {
 
   // for reuse between getall and addOne update section
   sortUserList(users) {
-    return _.sortBy(users, user => user.name.toLowerCase()).reverse();
+    return _.sortBy(users, user => user.name.toLowerCase());
   }
 }
