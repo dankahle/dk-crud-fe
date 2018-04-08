@@ -180,17 +180,7 @@ export class UserService {
     `;
 
     return this.apollo.mutate({mutation, variables: {id: user.id, data: {name: user.name, age: user.age}}})
-/*
-      update: (store, { data: {remove}, errors }) => {
-        // Read the data from our cache for this query.
-        const _data: {users} = store.readQuery({ query: this.getAllQuery });
-        // Add our comment from the mutation to the end.
-        _.remove(_data.users, x => x.id === remove.id);
-        _data.users = this.sortUserList(_data.users);
-        // Write our data back to the cache.
-        store.writeQuery({ query: this.getAllQuery, data: _data });
-      }})
-*/
+    // no update command required for updates, just for add/delete
       .map(result => {
         return result.data.update;
       })
