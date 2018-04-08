@@ -1,4 +1,53 @@
 
+todo:
+*
+* do a list/detail with the detail selected to something, then edit and the detail should automatically update if you watchQuery it and you're using just a typename:id cache key right? Hmm. Say you have a list, and click on something in that list and want to show it in detail... what to show? Before it was all in store so easy, just set store.selectedUser and use that. Hmmm, nice enough, but this is from query list and query list won't be updated if you change one? Funny that all their egs are of adding one and not of updating one. Maybe updating one updates any in the cache, no matter the query they come from??
+* httpInterceptor that looks for errors in gq responses (force errors to see what comes back)
+
+users, user, addUser, updateUser, removeUser
+...userfrag
+
+pass:
+wasted a bunch of time getting the query resolver working, had to hack in the stringId to make it happen.
+Next up is the add with mutate.update section to update the users array. This is sorted on the server by name
+and their egs just push onto array. You could sort in ui instead, but then have to share that sort fcn in getAll
+and addOne right? OR... in this update, use the lodash sortGetIndex stuff?? Not sure.
+What the UI does has nothing to do with the server in a way. But server is there solely for the UI (graphql at least)
+I say: sort in UI, and share the sort method between getAll and addOne/update.
+
+then update and delete and done for now.
+
+So what did you learn here?
+If you had users list and edit/add all on same page, then need that users list updated on add/edit right?
+If you used add/update and the update thing works like they say... then your user list:
+watchQuery.subscribe(...) will fire on adds and updates, without any extra work from you. Now fast forward to
+your routing scenario... add/update is another route and all will return to list page after which will do another query if it doesn't have latest, SO LOOK FOR NO ADDITIONAL QUERIES ON RETURN FROM ADD/EDIT FOR LIST
+Still confused why you had to do the resolver... you had an object
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* use fragments for all your queries AND mutation responses, so you get the same values back from mutations to update your cache
+* don't order on server if you're adding on client (that's everything right?) so you can mutate/update for adds and still have them ordered. No more ordering pipes, so just order in subscribe then? No, do it in service, but then have to do it in list query and mutation/update query as well. But... only way right, so pop out of list/update calls and share between them.
+
+
+
+pass:
+did initialization with userService.getAllInit() to populate the cache, then apollo.getClient().readQuery for direct cache hit on resolve. It's a poc right? Anyway, goes to show you can get data upfront, then not worry about getting it again, even with a watchQuery. apollo.query makes no sense in this realm, watchQuery does as then your edit/adds will update cache and your users.getAll calls will have all the values. Hmmm, let's think about htis...
+
+so you have dan/carl/jim and you add mary and do a getall from cache and if you play your cards right, cache is: User:Id so getall doesn't hit server? How doews it know that someone else added jane? I get it: you add mary and no reason to hit server for more, but if they refresh page then will, but that's a reinit scenario. so data is stagnant in this realm... as it should be I suppose, though if they don't update for hours, they don't see other people's additions. That will cause problems. your current rest is: update locally, then update server, BUT... don't call getAll cause you're handling it locally (contacts-fe). So this is the same deal: You initialize, so list resolve calls cache only as data is always there initially and... updated as well. So let's roll with this, with hard cache gets, just to prove a point here: we don't hit server, But then... let's see if we do if changed to apollo.query...
+
 
 pass:
 have user list coming up with gq, now do the rest.

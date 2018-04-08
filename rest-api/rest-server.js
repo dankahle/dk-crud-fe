@@ -24,7 +24,8 @@ app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true })); // use qs library, but don't see the need for it
 
 app.use(function tap(req, res, next) {
-  console.log(`${req.method} - ${req.url}`);
+  console.log(`${req.method} - ${req.url}:
+   ${req.body.query || req.body.mutation}`);
   next();
 })
 
