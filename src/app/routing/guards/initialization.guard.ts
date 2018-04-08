@@ -44,7 +44,7 @@ export class InitializationGuard implements CanActivate {
     // console.log('initguard start');
 
     // an example of a complex initialization flow with dependencies of dependencies
-    Observable.forkJoin(this.userService.getAll())
+    Observable.forkJoin(this.userService.getAll({networkOnly: true}))
       .map(x => {
         // console.log('initguard done');
         this.store.pub({...this.store.state, initialized: true});

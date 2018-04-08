@@ -22,10 +22,24 @@ export class UserEditComponent {
     }
   }
 
+
   submit() {
     if (this.addMode) {
       this.userService.addOne(this.user)
-        .subscribe(() => this.router.navigateByUrl('/'));
+        .subscribe(() => {
+          this.router.navigateByUrl('/');
+
+          // mutate.refreshQueries timing bug: It appears out add mutation's refreshQueries probably forces
+          // a network only fetchPolicy, BUT... those queries happen "after" this subscribe fires, so when
+          // we navigate to list page... still have old query values. It's something like this cause when we
+          // put this setTimeout in there before routing, all works fine. Without it, it doesn't have enough
+          // time to update the cache. Better to update the cache yourself then with update maybe?
+/*
+          setTimeout(() => {
+            this.router.navigateByUrl('/');
+          }, 30); // 1000 works, 0 doesn't
+*/
+        });
     } else {
       this.userService.updateOne(this.user)
         .subscribe(() => this.router.navigateByUrl('/'));

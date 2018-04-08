@@ -33,7 +33,14 @@ export class UserService {
          ${this.userFragment}
       `;
 
-  getAll(watch = false): Observable<User[]> {// change to init = false for cache verification in all list resolve calls
+  // we need to not watch by default as init/route resolves are one time things only, also we have a bug
+  // with apollo.mutate refreshQueries, in that the subscribe following only waits for mutation NOT FOR REFRESHQUERIES
+  // this messes up up as we navigate to list page, but get there before the cache is updated via rereshQueries.
+  // solution is maybe to use mutate's update instead to update cache, but this networkOnly force on resolve works
+  // too, just that the update would save us a server request, and in such, the proper way to go. Here's the thing:
+  // we're trying to do best practices. Surely if you have a clientside cache, you should update that locally if you can
+  // not do server hits that gets all the data all over again (when all you needed to do was add one to the list).
+  getAll({watch = false, networkOnly = false} = {}): Observable<User[]> {
 
     const query = gql`
          query GetUsers {
@@ -44,7 +51,8 @@ export class UserService {
          ${this.userFragment}
       `;
 
-    const obs =  this.apollo.query<any>({query: this.getAllQuery/*, fetchPolicy: 'network-only'*/})
+    const fetchPolicy = networkOnly ? 'network-only' : 'cache-first';
+    const obs =  this.apollo.query<any>({query: this.getAllQuery, fetchPolicy: fetchPolicy})
       // .valueChanges
       .map(result => {
         // just shows defaultId, not the one you changed to if you modified in new InMemoryCache() options

@@ -15,7 +15,7 @@ export class UserListResolver implements Resolve<User[]> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User[]> {
         const id = parseInt(route.paramMap.get('id'), 10);
 
-        return this.userService.getAll().take(1).map(users => {
+        return this.userService.getAll({networkOnly: true}).take(1).map(users => {
             if (users) {
                 return users;
             } else {
