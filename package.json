@@ -39,6 +39,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
     "hammerjs": "^2.0.8",
+    "joi": "^13.1.2",
     "lodash": "^4.17.5",
     "mongoose": "^5.0.12",
     "ng-trim-value-accessor": "^2.0.2",

@@ -4,6 +4,7 @@ import {User} from '../user';
 import * as _ from 'lodash';
 import {UserService} from '../../core/services/user.service';
 import {Apollo} from 'apollo-angular';
+import * as Joi from 'joi';
 
 @Component({
   selector: 'dk-user-edit',
@@ -26,6 +27,20 @@ export class UserEditComponent {
 
 
   submit() {
+
+    const schema = Joi.object().keys({
+      name: Joi.string().alphanum().min(3).max(30).required(),
+      age: Joi.number().integer().max(10).min(100),
+    });
+
+    // so joi works on client and I guess everything works on client frome nodeland then?
+    // all of this will be transpiled into es5 and junk up your app, but validation on client is huge
+    const result = Joi.validate(this.user, schema, {abortEarly: false});
+    if (result.error) {
+      // console.error(JSON.stringify(result.error, null, 2));
+      // return;
+    }
+
     if (this.addMode) {
       this.userService.addOne(this.user)
         .subscribe(newUser => {
