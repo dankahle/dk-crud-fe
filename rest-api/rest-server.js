@@ -1,12 +1,12 @@
 const express = require('express'),
   bodyParser = require('body-parser'),
   apiErrorHandler = require('api-error-handler'),
-  userRouter = require('./user/router'),
+  userRouter = require('./rest/user/router'),
   cors = require('cors'),
   mongoose = require('mongoose'),
   graphqlHTTP = require('express-graphql'),
   schema = require('./graphql'),
-  userRepo = require('./user/repo');
+  userRepo = require('./rest/user/repo');
 
 // Promise = require('bluebird'); // eslint-disable-line no-global-assign
 // mongoose.Promise = Promise;

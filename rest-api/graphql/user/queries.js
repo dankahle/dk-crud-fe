@@ -4,7 +4,7 @@ const GraphQLNonNull = graphql.GraphQLNonNull;
 const GraphQLID = graphql.GraphQLID;
 const GraphQLInt = graphql.GraphQLInt;
 const User = require('./user');
-const repo = require('../../user/repo');
+const repo = require('../../rest/user/repo');
 
 module.exports = {
 
