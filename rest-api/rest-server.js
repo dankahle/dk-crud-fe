@@ -5,7 +5,7 @@ const express = require('express'),
   cors = require('cors'),
   mongoose = require('mongoose'),
   graphqlHTTP = require('express-graphql'),
-  schema = require('./schema'),
+  schema = require('./graphql'),
   userRepo = require('./user/repo');
 
 // Promise = require('bluebird'); // eslint-disable-line no-global-assign
